@@ -120,7 +120,6 @@ func login(cfg *OktaConfig, user, pass string) (*OktaLoginResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	return &ores, nil
 }
 
@@ -233,15 +232,16 @@ func doMfa(ores *OktaLoginResponse, tf *OktaMfaFactor, mfaToken string) (string,
 
 // fetches the SAML we need for AWS round 1
 func getSaml(cfg *OktaConfig, sessionToken string) (*OktaSamlResponse, error) {
-	res, err := http.Get(
-		fmt.Sprintf(
-			"%s?%s=%s",
-			cfg.AppURL,
-			"onetimetoken",
-			sessionToken,
-		),
+	requestString := fmt.Sprintf(
+		"%s?%s=%s",
+		cfg.AppURL,
+		"onetimetoken",
+		sessionToken,
 	)
+	debugOkta("saml requestString %s", requestString)
+	res, err := http.Get(requestString)
 	if err != nil {
+		debugOkta("saml request error: %s", err)
 		return nil, err
 	}
 

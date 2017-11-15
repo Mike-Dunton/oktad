@@ -2,7 +2,6 @@ package main
 
 import "os"
 import "fmt"
-import "errors"
 import "os/exec"
 import "github.com/tj/go-debug"
 import "github.com/aws/aws-sdk-go/aws/credentials"
@@ -35,7 +34,9 @@ func launch(cmd string, args []string, creds *credentials.Credentials) error {
 		fmt.Sprintf(envVarFmt, "AWS_ACCESS_KEY_ID", cv.AccessKeyID),
 		fmt.Sprintf(envVarFmt, "AWS_SECRET_ACCESS_KEY", cv.SecretAccessKey),
 	)
-
+	debugLaunch("export AWS_SESSION_TOKEN=%s", cv.SessionToken)
+	debugLaunch("export AWS_ACCESS_KEY_ID=%s", cv.AccessKeyID)
+	debugLaunch("export AWS_SECRET_ACCESS_KEY=%s", cv.SecretAccessKey)
 	return e.Run()
 }
 
@@ -49,7 +50,15 @@ func prepAndLaunch(args []string, creds *credentials.Credentials) error {
 	var cArgs []string
 
 	if len(args) < 2 {
-		return errors.New("No program specified!")
+		cv, err := creds.Get()
+		if err != nil {
+			fmt.Println("creds are gone, ", err)
+			return err
+		}
+		fmt.Printf("export AWS_SESSION_TOKEN=%s \n", cv.SessionToken)
+		fmt.Printf("export AWS_ACCESS_KEY_ID=%s \n", cv.AccessKeyID)
+		fmt.Printf("export AWS_SECRET_ACCESS_KEY=%s \n", cv.SecretAccessKey)
+		return nil
 
 	}
 

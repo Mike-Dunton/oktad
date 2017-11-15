@@ -2,14 +2,15 @@
 
 [okta-aws](https://github.com/RedVentures/okta-aws), but in go. This program authenticates with Okta and then assumes role twice in Amazon.
 
-## Installation
+# Installation
 
-Grab a binary for your OS from the [latest release](https://github.com/hopkinsth/oktad/releases/latest), and put it somewhere in your PATH. Only supports Linux and OSX for now!
-
-If you're on OSX like me, this might be all you need...
-
-```sh
-curl -L -o /usr/local/bin/oktad https://github.com/RedVentures/oktad/releases/download/`curl -v 'https://github.com/RedVentures/oktad/releases/latest' 2>&1 | grep Location | grep -E -o 'v[0-9]+\.[0-9]+\.[0-9]+'`/oktad-darwin-amd64 && chmod +x /usr/local/bin/oktad
+Clone the repo to `$GOPATH/src/Mike-Dunton/`
+```
+git clone git@github.com:Mike-Dunton/oktad.git
+cd oktad
+glide install
+go build
+mv oktad /some/path/that/is/in/your/$PATH
 ```
 
 ## Setup
@@ -38,6 +39,8 @@ With those things set up, you should be able to run `oktad my_subaccount -- [com
 
 ## Usage
 
+### Run a Command
+This will run [command] with your aws credentials in the environment
 ```sh
 $ oktad [AWS profile] -- [command]
 ```
@@ -46,6 +49,25 @@ for example
 
 ```sh
 $ oktad production -- aws ec2 describe-instances
+```
+
+### Print your credentials
+This will output your aws credentials.
+```sh
+oktad [AWS profile]
+```
+
+for example if you had a profile called "production"
+
+```sh
+oktad production
+```
+
+it will output the following
+```
+export AWS_SESSION_TOKEN=<snip>
+export AWS_ACCESS_KEY_ID=<snip>
+export AWS_SECRET_ACCESS_KEY=<snip>
 ```
 
 ## Debugging
@@ -62,3 +84,4 @@ $ DEBUG=oktad* oktad production -- aws ec2 describe-instances
 - Thomas Hopkins [thopkins@redventures.com]
 - Lee Standen [@lstanden]
 - Todd Lunter [@tlunter]
+- Michael Dunton [@Mike-Dunton]
