@@ -48,7 +48,7 @@ $ oktad [AWS profile] -- [command]
 for example
 
 ```sh
-$ oktad production -- aws ec2 describe-instances
+$ oktad my_aws_profile -- aws ec2 describe-vpcs
 ```
 
 ### Print your credentials
@@ -60,7 +60,7 @@ oktad [AWS profile]
 for example if you had a profile called "production"
 
 ```sh
-oktad production
+oktad my_aws_profile
 ```
 
 it will output the following
