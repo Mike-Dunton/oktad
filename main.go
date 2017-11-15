@@ -258,7 +258,7 @@ func tryLogin(oktaCfg *OktaConfig, user string, pass string) (string, error) {
 		return "", err
 	}
 
-	if ores.Status != "SUCCESS" {
+	if ores.Status == "SUCCESS" {
 		return ores.SessionToken, nil
 	}
 
