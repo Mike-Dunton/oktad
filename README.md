@@ -30,7 +30,7 @@ Third, set up an AWS CLI config file. You need to create `~/.aws/config` and fil
 output = json
 region = us-east-1
 
-[profile my_subaccount]
+[profile my_aws_profile]
 role_arn = arn:aws:iam::MY_ACCOUNT_ID:role/wizards
 ```
 
@@ -68,6 +68,11 @@ it will output the following
 export AWS_SESSION_TOKEN=<snip>
 export AWS_ACCESS_KEY_ID=<snip>
 export AWS_SECRET_ACCESS_KEY=<snip>
+```
+
+## Useful one liners
+```
+eval "$(oktad my_aws_profile)"
 ```
 
 ## Debugging
