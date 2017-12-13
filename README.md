@@ -60,7 +60,7 @@ oktad [AWS profile]
 for example if you had a profile called "production"
 
 ```sh
-oktad my_aws_profile
+oktad production
 ```
 
 it will output the following
