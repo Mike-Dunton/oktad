@@ -1,15 +1,17 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+	"net/http"
+	"time"
 
-import "time"
-import "errors"
-import "net/http"
-import "github.com/jessevdk/go-flags"
-import "github.com/tj/go-debug"
-import "github.com/peterh/liner"
-import "github.com/aws/aws-sdk-go/aws/credentials"
-import "github.com/havoc-io/go-keytar"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/havoc-io/go-keytar"
+	"github.com/jessevdk/go-flags"
+	"github.com/peterh/liner"
+	"github.com/tj/go-debug"
+)
 
 const VERSION = "0.8.0"
 const SESSION_COOKIE = "__oktad_session_cookie"
@@ -75,73 +77,30 @@ func main() {
 		}
 	}
 
-	if !opts.ForceNewCredentials {
-		maybeCreds, err := loadCreds(awsProfile)
-		if err == nil {
-			debug("found cached credentials, going to use them")
-			// if we could load creds, use them!
-			err := prepAndLaunch(args, maybeCreds)
-			if err != nil {
-				fmt.Println("Error launching program: ", err)
-			}
-			return
-		}
+	var sessionToken string
+	var saml *OktaSamlResponse
+	var cookies []*http.Cookie
 
-		debug("cred load err %s", err)
-	}
-
-	keystore, err := keytar.GetKeychain()
+	sessionToken, err = getSessionFromLogin(&oktaCfg, cookies)
 	if err != nil {
-		fmt.Println("Failed to get keychain access")
-		debug("error was %s", err)
+		debug("sessionToken1 error was %s", err)
 		return
 	}
 
-	var sessionToken string
-	var saml *OktaSamlResponse
-	password, err := keystore.GetPassword(APPNAME, SESSION_COOKIE)
-	if err != nil || password == "" {
-		sessionToken, err = getSessionFromLogin(&oktaCfg)
+	saml, cookies, err = getSaml(&oktaCfg, cookies, sessionToken)
+	if err != nil {
+		fmt.Println("Enter in the next 2fa token.")
+		//Lets try one more time.
+		sessionToken, err = getSessionFromLogin(&oktaCfg, cookies)
 		if err != nil {
+			debug("sessionToken2 error was %s", err)
 			return
 		}
 
-		saml, err = getSaml(&oktaCfg, sessionToken)
+		saml, cookies, err = getSaml(&oktaCfg, cookies, sessionToken)
 		if err != nil {
 			fmt.Println("Error parsing SAML response")
-			debug("error was %s", err)
-			return
-		}
-	}
-
-	if saml == nil || saml.raw == "" {
-		// We got a saved session
-
-		cookie := http.Cookie{}
-		err = decodePasswordStruct(&cookie, password)
-		if err != nil {
-			debug("failed to read session cookie %s", err)
-		}
-
-		saml, err = getSamlSession(&oktaCfg, &cookie)
-		if err != nil {
-			debug("failed to get session from existing cookie %s", err)
-		}
-	}
-
-	if saml == nil || saml.raw == "" {
-		// final fallback
-		sessionToken, err = getSessionFromLogin(&oktaCfg)
-		if err != nil {
-			fmt.Println("Fatal error getting login session")
-			debug("error was %s", err)
-			return
-		}
-
-		saml, err = getSaml(&oktaCfg, sessionToken)
-		if err != nil {
-			fmt.Println("Fatal error getting saml")
-			debug("error was %s", err)
+			debug("We are out of trys :(. Error was %s", err)
 			return
 		}
 	}
@@ -180,7 +139,7 @@ func main() {
 	}
 }
 
-func getSessionFromLogin(oktaCfg *OktaConfig) (string, error) {
+func getSessionFromLogin(oktaCfg *OktaConfig, cookies []*http.Cookie) (string, error) {
 	debug := debug.Debug("oktad:getSessionFromLogin")
 	var user, pass string
 
@@ -202,7 +161,7 @@ func getSessionFromLogin(oktaCfg *OktaConfig) (string, error) {
 
 	if user != "" && pass != "" {
 		debug("stored okta credentials found, attempting to use them")
-		sessionToken, err := tryLogin(oktaCfg, user, pass)
+		sessionToken, err := tryLogin(oktaCfg, user, pass, cookies)
 		if err == nil {
 			return sessionToken, err
 		}
@@ -235,7 +194,7 @@ func getSessionFromLogin(oktaCfg *OktaConfig) (string, error) {
 		return "", errors.New("Must supply a username and password")
 	}
 
-	sessionToken, err := tryLogin(oktaCfg, user, pass)
+	sessionToken, err := tryLogin(oktaCfg, user, pass, cookies)
 	if err == nil && sessionToken != "" {
 		keystore.AddPassword(APPNAME, CREDENTIALS_USERNAME, user)
 		if err != nil {
@@ -249,9 +208,9 @@ func getSessionFromLogin(oktaCfg *OktaConfig) (string, error) {
 	return sessionToken, err
 }
 
-func tryLogin(oktaCfg *OktaConfig, user string, pass string) (string, error) {
+func tryLogin(oktaCfg *OktaConfig, user string, pass string, cookies []*http.Cookie) (string, error) {
 	debug := debug.Debug("oktad:tryLogin")
-	ores, err := login(oktaCfg, user, pass)
+	ores, err := login(oktaCfg, user, pass, cookies)
 	if err != nil {
 		fmt.Println("Error authenticating with Okta! Maybe your username or password are wrong.")
 		debug("login err %s", err)
@@ -285,7 +244,7 @@ TRYMFA:
 	}
 
 	if tries < 2 {
-		sessionToken, err = doMfa(ores, factor, mfaToken)
+		sessionToken, err = doMfa(ores, factor, mfaToken, cookies)
 		if err != nil {
 			tries++
 			fmt.Println("Invalid MFA code, please try again.")
