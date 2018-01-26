@@ -27,7 +27,6 @@ func assumeFirstRole(acfg AwsConfig, saml *OktaSamlResponse) (*credentials.Crede
 	var arns string
 
 	for _, a := range saml.Attributes {
-		debugAws("Saml Attribute %s", a)
 		if a.Name == "https://aws.amazon.com/SAML/Attributes/Role" {
 			arns = a.Value
 			debugAws("found principal ARN %s", a.Value)

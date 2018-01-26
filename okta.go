@@ -67,7 +67,7 @@ func newLoginRequest(user, pass string) OktaLoginRequest {
 		user,
 		pass,
 		map[string]interface{}{
-			"multiOptionalFactorEnroll": true,
+			"multiOptionalFactorEnroll": false,
 			"warnBeforePasswordExpired": false,
 		},
 	}
@@ -260,8 +260,6 @@ func getSaml(cfg *OktaConfig, cookies []*http.Cookie, sessionToken string) (*Okt
 			req.AddCookie(cookie)
 		}
 	}
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36")
-	debugOkta("REQUEST BEFORE WE DO THIS ~~~~~~ %s", req)
 	res, err := client.Do(req)
 
 	if err != nil {
