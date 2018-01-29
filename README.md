@@ -13,6 +13,9 @@ go build
 mv oktad /some/path/that/is/in/your/$PATH
 ```
 
+
+#testing signed commit 
+
 ## Setup
 
 First, create an `~/.okta-aws/config` file with your Ookta base URL and app URL, like below:
