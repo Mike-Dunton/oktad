@@ -6,7 +6,7 @@ import "fmt"
 import "time"
 import "encoding/base64"
 import "encoding/gob"
-import "github.com/tj/go-debug"
+import "github.com/visionmedia/go-debug"
 import "github.com/aws/aws-sdk-go/aws/credentials"
 import "github.com/havoc-io/go-keytar"
 

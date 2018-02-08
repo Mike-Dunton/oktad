@@ -8,7 +8,7 @@ import "errors"
 import "encoding/json"
 import "encoding/xml"
 import "encoding/base64"
-import "github.com/tj/go-debug"
+import "github.com/visionmedia/go-debug"
 import "github.com/PuerkitoBio/goquery"
 import (
 	"net/http"

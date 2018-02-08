@@ -1,7 +1,7 @@
 package main
 
 import "github.com/go-ini/ini"
-import "github.com/tj/go-debug"
+import "github.com/visionmedia/go-debug"
 import "os"
 import "fmt"
 import "errors"
