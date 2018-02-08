@@ -1,10 +1,10 @@
-hash: feb42fbdcc75bc7948a5e34d5b381e7ad613190b38954b4da598b05046136b5d
-updated: 2017-01-30T13:53:21.17030985-08:00
+hash: 89ed886b53ef57b5daddc7e73be59a62940f8497cdea63cad01bcce78c346104
+updated: 2018-02-08T09:26:50.17944-05:00
 imports:
 - name: github.com/andybalholm/cascadia
   version: 349dd0209470eabd9514242c688c403c0926d266
 - name: github.com/aws/aws-sdk-go
-  version: 2ae1f45d01cdc7316a4d6c518c21a6d9d81a4970
+  version: 04519f0a17774a66d752df001193954784d6e7dc
   subpackages:
   - aws
   - aws/awserr
@@ -22,6 +22,7 @@ imports:
   - aws/request
   - aws/session
   - aws/signer/v4
+  - internal/shareddefaults
   - private/protocol
   - private/protocol/query
   - private/protocol/query/queryutil
@@ -29,21 +30,21 @@ imports:
   - private/protocol/xml/xmlutil
   - service/sts
 - name: github.com/go-ini/ini
-  version: e3c2d47c61e5333f9aa2974695dd94396eb69c75
+  version: 32e4c1e6bc4e7d0d8451aa6b75200d19e37a536a
 - name: github.com/havoc-io/go-keytar
   version: ebbe6b14d2cc43be32d2aeb3b2b7cba947eb0bec
 - name: github.com/jessevdk/go-flags
-  version: 4e64e4a4e2552194cf594243e23aa9baf3b4297e
+  version: f88afde2fa19a30cf50ba4b05b3d13bc6bae3079
 - name: github.com/jmespath/go-jmespath
-  version: bd40a432e4c76585ef6b72d3fd96fb9b6dc7b68d
+  version: c2b33e8439af944379acbdd9c3a5fe0bc44bd8a5
 - name: github.com/peterh/liner
-  version: 3c5f577f62ec95a012ea48a58dd4de3c48222a35
+  version: 3681c2a912330352991ecdd642f257efe5b85518
 - name: github.com/PuerkitoBio/goquery
-  version: 3cb3b8656883c2cc3deb9c643d93ea6e5157e425
-- name: github.com/tj/go-debug
-  version: ff4a55a20a86994118644bbddc6a216da193cc13
+  version: 09540e565986583836b5fc792fe951ec5fd201dd
+- name: github.com/visionmedia/go-debug
+  version: bfacf9d8a444b50f5d7ae47727544e775486966f
 - name: golang.org/x/net
-  version: f2499483f923065a842d38eb4c7f1927e6fc6e6d
+  version: f5dfe339be1d06f81b22525fe34671ee7d2c8904
   subpackages:
   - html
   - html/atom

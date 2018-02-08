@@ -10,7 +10,7 @@ import (
 	"github.com/havoc-io/go-keytar"
 	"github.com/jessevdk/go-flags"
 	"github.com/peterh/liner"
-	"github.com/tj/go-debug"
+	"github.com/visionmedia/go-debug"
 )
 
 const VERSION = "0.8.0"
