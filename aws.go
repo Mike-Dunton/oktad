@@ -58,7 +58,7 @@ func assumeFirstRole(acfg AwsConfig, saml *OktaSamlResponse) (*credentials.Crede
 			PrincipalArn:    &principalArn,
 			RoleArn:         &roleArn,
 			SAMLAssertion:   &saml.raw,
-			DurationSeconds: aws.Int64(3600),
+			DurationSeconds: aws.Int64(43200),
 		},
 	)
 
