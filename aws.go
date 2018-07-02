@@ -10,7 +10,7 @@ import "github.com/aws/aws-sdk-go/aws/credentials"
 import "github.com/aws/aws-sdk-go/aws/session"
 import "github.com/aws/aws-sdk-go/service/sts"
 
-var debugAws = debug.Debug("oktad:aws")
+var debugAws = Debug("oktad:aws")
 
 // assumes the first role and returns the credentials you need for
 // the second assumeRole...
